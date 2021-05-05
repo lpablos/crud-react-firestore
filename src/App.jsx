@@ -5,6 +5,8 @@ import { db } from './firebase'
 function App() {
   const [tareas, setTareas] = useState([])
   const [tarea, setTarea] = useState('')
+  const [modoEdicion, setModoEdicion] = useState(false)
+  const [identyEdit, setIdentyEdit] = useState('')
 
   useEffect(() => {
     obtenerDatos()    
@@ -48,6 +50,22 @@ function App() {
     }
   }
 
+  const activarEdicion = (task)=>{    
+    setModoEdicion(true)
+    setTarea(task.name)
+    setIdentyEdit(task.id)
+  }
+  
+  const editar = async (e) =>{
+    e.preventDefault()
+    try {
+      alert("Estas tratando de editar")
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
   return (
     <div class="container mr-3">
       <div class="row">
@@ -60,7 +78,7 @@ function App() {
                   <div class="row align-items-start">
                     <div class="col">{item.name}</div>                  
                     <div class="col float-end">
-                      <button class="btn btn-warning mx-1">Editar</button>
+                      <button class="btn btn-warning mx-1" onClick={()=>activarEdicion(item)}>Editar</button>
                       <button class="btn btn-danger mx-2" onClick={()=> eliminar(item.id)}>Eliminar</button>
                     </div>
                   </div>
@@ -71,8 +89,14 @@ function App() {
           </ul>
         </div>
         <div class="col-md-6">
-          <h2>Formulario</h2>
-          <form onSubmit={agregar} method="post">
+          <h2>
+            {
+              modoEdicion
+              ? ('Editar Tarea')
+              : ('Agregar Tarea')
+            }
+          </h2>
+          <form onSubmit={ modoEdicion? editar : agregar} method="post">
             <div class="mb-3">
               <input type="text" 
                 placeholder="Ingrese tarea" 
@@ -81,7 +105,19 @@ function App() {
                 value={tarea}/>
               
               <div class="d-grid gap-2 mt-2">
-                <button type="submit" class="btn btn-primary btn-sm">Agregar</button>                
+                <button 
+                  type="submit" 
+                  class={
+                    modoEdicion
+                    ? "btn btn-warning btn-sm"
+                    : "btn btn-primary btn-sm"
+                  }>
+                  {
+                    modoEdicion
+                    ? ('Editar')
+                    : ('Guardar')
+                  }
+                </button>                
               </div>
             </div>
           </form>
