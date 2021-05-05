@@ -38,6 +38,16 @@ function App() {
     }
   }
 
+  const eliminar = async (id) => {
+    try {
+      await db.collection('tareas').doc(id).delete()
+      let arrayFiltrado = tareas.filter(item => item.id !== id)
+      setTareas(arrayFiltrado)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div class="container mr-3">
       <div class="row">
@@ -46,9 +56,18 @@ function App() {
           <ul class="list-group">
             {
               tareas.map(item=>(
-                <li class="list-group-item" key={item.id}>{item.name}</li>
+                <li class="list-group-item"  key={item.id}>
+                  <div class="row align-items-start">
+                    <div class="col">{item.name}</div>                  
+                    <div class="col float-end">
+                      <button class="btn btn-warning mx-1">Editar</button>
+                      <button class="btn btn-danger mx-2" onClick={()=> eliminar(item.id)}>Eliminar</button>
+                    </div>
+                  </div>
+                </li>
               ))
             }
+           
           </ul>
         </div>
         <div class="col-md-6">
