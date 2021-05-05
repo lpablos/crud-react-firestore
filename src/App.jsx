@@ -58,11 +58,19 @@ function App() {
   
   const editar = async (e) =>{
     e.preventDefault()
+    if(!tarea.trim()){
+      console.log("tarea vacia");
+      return
+    }
     try {
-      alert("Estas tratando de editar")
+      await db.collection('tareas').doc(identyEdit).update({name:tarea})
+      let arrayEditado = tareas.map(item => (item.id === identyEdit)? { id: item.id, name: tarea, date: item.date } : item)
+      setTareas(arrayEditado)
+      setModoEdicion(false)
+      setTarea('')
+      setIdentyEdit('')
     } catch (error) {
-      console.log(error);
-      
+      console.log(error);      
     }
   }
 
